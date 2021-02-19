@@ -1,8 +1,12 @@
-FROM golang:alpine AS builder
+FROM golang:rc-alpine3.12 AS builder
 
-WORKDIR /src/
-COPY . .
+WORKDIR /src
+COPY /src .
+
+RUN cd /src && go build main.go
 
 FROM scratch
-COPY --from=builder /src/ .
-ENTRYPOINT ["go", "run", "main.go"]
+WORKDIR /app
+COPY --from=builder /src/main .
+
+CMD ["./main"]
